@@ -1,15 +1,5 @@
 #SingleInstance force
-#Include <MIDIv2>
-
-; ==================================================================================================
-; == 模块加载 (Module Loading)
-; ==================================================================================================
-; 模块加载顺序至关重要。
-; 1. 全局状态
-; 2. 数据配置 (音阶、和弦、声部等)
-; 3. 核心功能库 (MIDI I/O, 工具函数)
-; 4. 功能模块 (系统控制、和弦、琶音器、旋律)
-; ==================================================================================================
+#Include ../lib/MIDIv2.ahk
 
 ; 1. 全局状态
 #Include core\state.ahk
@@ -26,10 +16,9 @@
 #Include core\midi_io.ahk
 
 ; 4. 功能模块
+HotIf(IsEnabled)
 #Include modules\system.ahk
 #Include modules\chords.ahk
 #Include modules\arpeggiator.ahk
 #Include modules\melody.ahk
-
-; 结束由 system.ahk 开启的 HotIf 上下文
 HotIf()

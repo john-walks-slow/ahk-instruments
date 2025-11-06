@@ -6,7 +6,6 @@ IsEnabled(*) {
     ; ScrollLock is the global MIDI switch (Toggle state)
     return GetKeyState("ScrollLock", "T")
 }
-HotIf(IsEnabled)
 
 HandleEsc(*) {
     global
@@ -54,7 +53,7 @@ CapsLockToggle(*) {
 
     ; Show a temporary tooltip for the latch state
     stateText := g_IsChordLatchOn ? "ON" : "OFF"
-    Tooltip "Chord Latch: %stateText%", , , 2
+    Tooltip "Chord Latch: " . stateText, , , 2
     SetTimer () => Tooltip(, , , 2), -1500 ; Hide after 1.5 seconds
 }
 
