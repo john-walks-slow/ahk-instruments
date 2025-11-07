@@ -1,0 +1,189 @@
+{
+    // MidiAHK v3 Configuration - "The Expressive Update"
+    // ==================================================
+    // This configuration demonstrates the new features inspired by data.json5,
+    // focusing on dynamic chord building with `modifiers` and `followups`.
+
+    // NEW IN V3:
+    // -----------
+    // 1. Chord Modifiers (Simultaneous Press):
+    //    - When a chord key (e.g., "z") is pressed simultaneously with a modifier key (e.g., "x"),
+    //      the entire chord shape is replaced with the modifier's definition.
+    //    - Example: Pressing "z" + "x" together plays a Major 7th chord instead of the basic triad.
+    //    - Short Syntax: Modifier shapes can be a comma-separated string: "P1, M3, P5, M7".
+
+    // 2. Chord Followups (Sequential Press):
+    //    - After a chord key is held down, pressing a followup key adds extra notes to the chord.
+    //    - This allows for building complex harmonies dynamically. The base chord remains, and
+    //      notes are layered on top.
+    //    - Example: Press "z" (plays a triad), then press "x" (adds the 7th), then press "c" (adds the 9th).
+    //    - Followup notes are released when their respective keys are released.
+
+    // 3. Enhanced Auto-Hold (Latch):
+    //    - `setAutoHold` replaces `toggleLatch`.
+    //    - `setAutoHoldMode` controls what is affected: just chords, just melody, or everything.
+
+    // 4. Per-Chord Voicing Memory:
+    //    - `memorizeVoicing` toggles a mode where changing the voicing while holding a specific
+    //      chord (e.g., the "I" chord) will save that voicing preference for that chord only.
+    //    - `clearMemorizedVoicing` resets all these specific preferences.
+
+    // ==================================================================================================
+    // == System Settings
+    // ==================================================================================================
+    "combinationDelay": 15, // Delay in milliseconds to wait for multi-key combinations. A bit higher for modifiers.
+
+    // ==================================================================================================
+    // == System Controls
+    // ==================================================================================================
+    "Esc":          { action: "panic" },
+    "ScrollLock":   { action: "toggleEnabled" }, // Master switch for all hotkeys
+
+    "Up":           { action: "setTranspose", param: "+1" },
+    "Down":         { action: "setTranspose", param: "-1" },
+    "Right":        { action: "setTranspose", param: "+12" },
+    "Left":         { action: "setTranspose", param: "-12" },
+    "RShift & Up":    { action: "setChordTranspose", param: "+1" },
+    "RShift & Down":  { action: "setChordTranspose", param: "-1" },
+    "RShift & Right": { action: "setChordTranspose", param: "+12" },
+    "RShift & Left":  { action: "setChordTranspose", param: "-12" },
+
+    "CapsLock":         { action: "setAutoHold", param: "cycle" },
+    "Shift & CapsLock": { action: "setAutoHoldMode", param: "cycle" }, // Modes: chord, melody, all
+    "F1":               { action: "toggleArp" },
+
+    "NumpadDel":        { action: "memorizeVoicing", param: "cycle" },
+    "Shift & NumpadDel":{ action: "clearMemorizedVoicing" },
+
+    // ==================================================================================================
+    // == Voicings & Arp Patterns
+    // ==================================================================================================
+    // Voicing format: An array where each element is [ToneIndex, OctaveShift]. ToneIndex 1=root, 2=3rd, 3=5th...
+    "Numpad0": { action: "setVoicing", param: [[1,0], [2,0], [3,0], [4,0], [5,0]] }, // Root Position
+    "Numpad1": { action: "setVoicing", param: [[2,0], [3,0], [1,1]] }, // 1st Inversion (triads)
+    "Numpad2": { action: "setVoicing", param: [[3,0], [1,1], [2,1]] }, // 2nd Inversion (triads)
+    "Numpad3": { action: "setVoicing", param: [[4,0], [1,1], [2,1], [3,1]] }, // 3rd Inversion (7th chords)
+    "Numpad4": { action: "setVoicing", param: [[1,-1], [3,0], [2,1]] }, // Spread Triad
+    "Numpad5": { action: "setVoicing", param: [[1,-1], [3,0], [4,0], [2,1]] }, // Spread 7th
+    "Numpad6": { action: "setVoicing", param: [[1,-1], [2,0], [3,0], [4,0]] }, // Close cluster over low root
+    
+    // Arp Pattern format: An array of Tone Indices to play in sequence.
+    "Numpad7": { action: "setArpPattern", param: [1,2,3,4,5,6] }, // Up
+    "Numpad8": { action: "setArpPattern", param: [6,5,4,3,2,1] }, // Down
+    "Numpad9": { action: "setArpPattern", param: [1,3,2,4,3,5] }, // Up/Down
+    "NumpadAdd": { action: "setArpPattern", param: "random" }, // Random
+
+    // ==================================================================================================
+    // == Melody Keys (Right Hand)
+    // ==================================================================================================
+    "u": { action: "note", param: "C5" }, "i": { action: "note", param: "D5" }, "o": { action: "note", param: "E5" },
+    "p": { action: "note", param: "F5" }, "[": { action: "note", param: "G5" }, "]": { action: "note", param: "A5" },
+    "\\": { action: "note", param: "B5" },
+    "8": { action: "note", param: "C#5" }, "9": { action: "note", param: "D#5" }, "-": { action: "note", param: "F#5" },
+    "=": { action: "note", param: "G#5" }, "Backspace": { action: "note", param: "A#5" },
+
+    // ==================================================================================================
+    // == Chord Keys (Left Hand) - Using Modifiers and Followups
+    // ==================================================================================================
+    "z": { // I Maj
+        action: "chord",
+        param: {
+            root: "I",
+            shape: ["P1", "M3", "P5"],
+            // MODIFIERS: Press with 'z' to get a different chord instantly.
+            modifiers: {
+                "x": "P1, M3, P5, M7",      // Maj7
+                "c": "P1, M2, P5",          // sus2
+                "v": "P1, P4, P5",          // sus4
+                "xc": "P1, M3, P5, M7, M9", // Maj9
+            },
+            // FOLLOWUPS: Hold 'z', then press these keys to add notes.
+            followups: {
+                "x": "M7", // Add Major 7th
+                "c": "M9", // Add Major 9th
+                "v": "M11", // Add Major 11th
+            },
+        },
+    },
+    "a": { // ii min
+        action: "chord",
+        param: {
+            root: "ii",
+            shape: ["P1", "m3", "P5"],
+            modifiers: {
+                "s": "P1, m3, P5, m7",         // min7
+                "d": "P1, m3, P5, m7, M9",     // min9
+                "f": "P1, P4, P5",             // sus4
+                "sd": "P1, m3, P5, m7, M9, P11", // min11
+            },
+            followups: {
+                "s": "m7",
+                "d": "M9",
+                "f": "P11",
+            },
+        },
+    },
+    "q": { // V Dom
+        action: "chord",
+        param: {
+            root: "V",
+            shape: ["P1", "M3", "P5"],
+            modifiers: {
+                "w": "P1, M3, P5, m7",         // Dom7
+                "e": "P1, M3, P5, m7, M9",     // Dom9
+                "r": "P1, P4, P5, m7",         // 7sus4
+                "we": "P1, M3, P5, m7, m9",    // Dom7(b9) - Altered
+            },
+            followups: {
+                "w": "m7",
+                "e": "M9",
+                "r": "M13",
+                "t": "m9", // Add b9 for tension
+            },
+        },
+    },
+    "s": { // iii min
+        action: "chord",
+        param: {
+            root: "iii",
+            shape: ["P1", "m3", "P5"],
+            modifiers: {
+                "d": "P1, m3, P5, m7", // min7
+            },
+            followups: {
+                "d": "m7",
+                "f": "M9",
+            },
+        },
+    },
+    "LControl": { // IV Maj
+        action: "chord",
+        param: {
+            root: "IV",
+            shape: ["P1", "M3", "P5"],
+            modifiers: {
+                "z": "P1, M3, P5, M7", // Maj7
+                "a": "P1, M3, #4, P5, M7", // Lydian (Maj7#11)
+            },
+            followups: {
+                "z": "M7",
+                "a": "M9",
+            },
+        },
+    },
+    "LShift": { // vi min
+        action: "chord",
+        param: {
+            root: "vi",
+            shape: ["P1", "m3", "P5"],
+            modifiers: {
+                "z": "P1, m3, P5, m7", // min7
+                "a": "P1, m3, P5, m7, M9", // min9
+            },
+            followups: {
+                "z": "m7",
+                "a": "M9",
+            },
+        },
+    },
+}
