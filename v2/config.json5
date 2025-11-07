@@ -1,0 +1,134 @@
+{
+  'Tab': {
+    'action': 'note',
+    'param': 'C5',
+  },
+  'Q': {
+    'action': 'note',
+    'param': 'C#5',
+  },
+  'W': {
+    'action': 'note',
+    'param': 'D5',
+  },
+  'Z': {
+    'action': 'chord',
+    'param': {
+      'root': 'I',
+      'shape': ['P1', 'M3', 'P5'],
+      'modifiers': {
+        'X': 'P1,M3,P5,M7',
+        'C': 'P1,m3,P5',
+        'V': 'P1,M3,A4,M7',
+        'X,C': 'P1,m3,P5,m7',
+      },
+      'followups': {
+        'A': 'M9',
+        'S': 'P11',
+        'D': ['m7', 'M9'],
+      },
+    },
+  },
+  'S': {
+    'action': 'chord',
+    'param': {
+      'root': 'ii',
+      'shape': ['P1', 'm3', 'P5'],
+      'modifiers': {
+        'D': 'P1,m3,P5,m7',
+      },
+    },
+  },
+  'Numpad1': {
+    'action': 'setVoicing',
+    'param': [
+      [1, 0],
+      [2, 0],
+      [3, 0],
+    ],
+  },
+  'Numpad2': {
+    'action': 'setVoicing',
+    'param': [
+      [3, -1],
+      [1, 0],
+      [2, 0],
+    ],
+  },
+  'Numpad3': {
+    'action': 'setVoicing',
+    'param': [
+      [2, 0],
+      [3, 0],
+      [1, 1],
+    ],
+  },
+  'Numpad4': {
+    'action': 'setVoicing',
+    'param': [
+      [1, 0],
+      [3, 0],
+      [2, 1],
+    ],
+  },
+  'Numpad5': {
+    'action': 'setVoicing',
+    'param': [
+      [1, 0],
+      [1, 1],
+      [3, 1],
+    ],
+  },
+  'Left': {
+    'action': 'setTranspose',
+    'param': '-1',
+  },
+  'Right': {
+    'action': 'setTranspose',
+    'param': '+1',
+  },
+  'Down': {
+    'action': 'setTranspose',
+    'param': '=0',
+  },
+  'Shift & Left': {
+    'action': 'setChordTranspose',
+    'param': '-1',
+  },
+  'Shift & Right': {
+    'action': 'setChordTranspose',
+    'param': '+1',
+  },
+  'Shift & Down': {
+    'action': 'setChordTranspose',
+    'param': '=0',
+  },
+  'NumpadDiv': {
+    'action': 'toggleArp',
+  },
+  'Numpad7': {
+    'action': 'setArpPattern',
+    'param': [1, 2, 3, 4],
+  },
+  'Numpad8': {
+    'action': 'setArpPattern',
+    'param': [4, 3, 2, 1],
+  },
+  'Numpad9': {
+    'action': 'setArpPattern',
+    'param': [1, 2, 3, 4, 3, 2],
+  },
+  'Numpad6': {
+    'action': 'setArpPattern',
+    'param': 'random',
+  },
+  'CapsLock': {
+    'action': 'toggleLatch',
+  },
+  'Escape': {
+    'action': 'panic',
+  },
+  'Pause': {
+    'action': 'toggleEnabled',
+  },
+}

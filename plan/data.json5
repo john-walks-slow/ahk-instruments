@@ -1,0 +1,131 @@
+{
+  // This is just for showing the syntax. An actual working demo should have much more mappings.
+
+  // Trigger
+  'tab': {
+    // NoteOn when key down, NoteOff when key up
+    action: 'note',
+    param: 'C5',
+  },
+  'z': {
+    action: 'chord',
+    param: {
+      root: 'Ⅰ',
+      octaveOffset: 0,
+      // Define the chord shape
+      shape: ['P1', 'M3', 'P5'],
+
+      /** Modifiers and followups (short syntax) */
+      // modifiers are keys that are pressed simultaneously with the trigger key
+      // Keys pressed with in ~10 ms are all viewed as simultaneous press
+      // (beware, this 10ms is a tolerance area, which add 10ms input latency to all keys involved )
+      modifiers: {
+        x: 'P1,M3,P5,M7',
+        c: 'P1,M2,P5',
+        v: 'P1,P4,P5',
+        xc: 'P1,M3,P5,M7,M9',
+        xcv: 'P1,M3,P5,M7,M9,M11',
+      },
+      // followups are keys that are pressed after the trigger keys
+      // followups chain is not supported
+      // Multiple followups can be fired together (z,x,c trigger both z - x and z - c)
+      // Followup is seen as released once the base is released
+      followups: {
+        x: 'M7',
+        c: 'M9',
+        v: 'M11',
+      },
+    },
+  },
+  /** Modifiers and followups (verbose syntax) */
+  'z & x': {
+    action: 'chord',
+    param: {
+      root: 'Ⅰ',
+      octaveOffset: 0,
+      shape: ['P1', 'M3', 'P5', 'M7'],
+    },
+  },
+  'z & x & c': {
+    action: 'chord',
+    param: {
+      root: 'Ⅰ',
+      octaveOffset: 0,
+      shape: ['P1', 'M3', 'P5', 'M7', 'M9'],
+    },
+  },
+  'z & x & v': {
+    action: 'chord',
+    param: {
+      root: 'Ⅰ',
+      octaveOffset: 0,
+      shape: ['P1', 'M3', 'P5', 'M7', 'M9', 'P11'],
+    },
+  },
+  'z & c': {
+    action: 'chord',
+    param: {
+      root: 'Ⅰ',
+      octaveOffset: 0,
+      shape: ['P1', 'M2', 'P5'],
+    },
+  },
+  'z & v': {
+    action: 'chord',
+    param: {
+      root: 'Ⅰ',
+      octaveOffset: 0,
+      shape: ['P1', 'P4', 'P5'],
+    },
+  },
+  'z - x': {
+    // Overlay extra notes to the current chord
+    // They are count as chord notes, so can be picked by chord latch / arp
+    // The extra note is released once the follow up key is released
+    action: 'chordExtension',
+    param: ['M7'],
+  },
+
+  'numpad5': {
+    // Setup the chord voicing.
+    // When not pressing a chord, it change the global voicing
+    // When pressing a chord, this will change the per-chord voicing (auto-memory, override global)
+    action: 'setVoicing',
+    // power chord (number represent the octave offset of each note, omit a note with 0)
+    param: [1, 0, 1, 1, 1, 1],
+  },
+  'numpadDel': {
+    // With memorizeVoicing on, when pressing a chord and choose a voicing, a per-chord voicing will be memorized, all notes of the new voicing are played
+    // With memorizeVoicing off (default), when pressing a chord and choose a voicing, only different notes are played, the voicing won't be memorized
+    // When turning off memorizeVoicing, memorized voicings will remain
+    action: 'memorizeVoicing',
+    // support 'on' / 'off' / 'cycle'
+    param: 'cycle',
+  },
+  'shift + numpadDel': {
+    action: 'clearMemorizedVoicing',
+  },
+  'left': {
+    // A global transpose. Doesn't affect currently playing notes/chords
+    action: 'setTranspose',
+    // Support format: '=x' '+x' '-x
+    param: '-1',
+  },
+  'shift + left': {
+    // An additional layer of transpose on top of the global transpose. Useful for borrowing chords. Doesn't affect currently playing notes/chords
+    action: 'setChordTranspose',
+    param: '-1',
+  },
+  'capslock': {
+    // Auto hold until next chord
+    action: 'setAutoHold',
+    // support 'on' / 'off' / 'cycle'
+    param: 'cycle',
+  },
+  'shift + capslock': {
+    // What section is influenced by autoHold
+    action: 'setAutoHoldMode',
+    // support 'chord' / 'melody' / 'all' / 'cycle'
+    param: 'cycle',
+  },
+}
