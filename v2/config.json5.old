@@ -1,0 +1,138 @@
+{
+    // MidiAHK v2 Configuration
+    // ========================
+
+    // ==================================================================================================
+    // == System Settings
+    // ==================================================================================================
+    "combinationDelay": 10, // Delay in milliseconds to wait for multi-key combinations.
+
+    // ==================================================================================================
+    // == System Controls
+    // ==================================================================================================
+    // Keys are AutoHotkey key names. For a full list, see: https://www.autohotkey.com/docs/v2/KeyList.htm
+    // The '&' symbol creates key combinations (e.g., "LShift & z"). Order doesn't matter.
+    //
+    // ACTIONS:
+    // - note: Plays a single MIDI note. Param is note name ("C4", "F#5") or MIDI number (60).
+    // - chord: Plays a chord. See chord params below.
+    // - setVoicing: Applies a voicing pattern to the current or next chord.
+    // - setTranspose: Adjusts the global transpose value. Param: "+1", "-1", "=0".
+    // - setChordTranspose: Adjusts the chord-only transpose value.
+    // - toggleArp: Toggles the arpeggiator on/off.
+    // - setArpPattern: Changes the active arpeggiator pattern.
+    // - toggleLatch: Toggles chord latch (auto-hold).
+    // - panic: Stops all sounding notes.
+    //
+    // CHORD PARAMS:
+    // - root: The scale degree of the chord's root (e.g., "I", "ii", "V"). Case determines quality (I=Maj, i=min).
+    // - quality: Explicitly sets chord quality ("Maj", "min", "dim", "aug"). Overrides root case.
+    // - shape: An array of intervals defining the chord structure (e.g., ["P1", "M3", "P5"]).
+    // - octaveOffset: Shifts the entire chord by N octaves.
+    // - modifiers: (Short syntax) A map of additional keys that change the chord's shape.
+    
+    // ==================================================================================================
+    // == System Controls
+    // ==================================================================================================
+    "Esc":          { action: "panic" },
+    "ScrollLock":   { action: "toggleEnabled" }, // Master switch for all hotkeys
+
+    "Up":           { action: "setTranspose", param: "+1" },
+    "Down":         { action: "setTranspose", param: "-1" },
+    "Right":        { action: "setTranspose", param: "+12" },
+    "Left":         { action: "setTranspose", param: "-12" },
+    "RShift & Up":    { action: "setChordTranspose", param: "+1" },
+    "RShift & Down":  { action: "setChordTranspose", param: "-1" },
+    "RShift & Right": { action: "setChordTranspose", param: "+12" },
+    "RShift & Left":  { action: "setChordTranspose", param: "-12" },
+
+    "CapsLock":     { action: "toggleLatch" },
+    "F1":           { action: "toggleArp" },
+
+    // ==================================================================================================
+    // == Voicings & Arp Patterns
+    // ==================================================================================================
+    // Voicing format: An array where each element is [ToneIndex, OctaveShift]. ToneIndex 1=root, 2=3rd, 3=5th...
+    "Numpad0": { action: "setVoicing", param: [[1,0], [2,0], [3,0], [4,0], [5,0]] }, // Root Position
+    "Numpad1": { action: "setVoicing", param: [[2,0], [3,0], [1,1]] }, // 1st Inversion (triads)
+    "Numpad2": { action: "setVoicing", param: [[3,0], [1,1], [2,1]] }, // 2nd Inversion (triads)
+    "Numpad3": { action: "setVoicing", param: [[4,0], [1,1], [2,1], [3,1]] }, // 3rd Inversion (7th chords)
+    "Numpad4": { action: "setVoicing", param: [[1,-1], [3,0], [2,1]] }, // Spread Triad
+    "Numpad5": { action: "setVoicing", param: [[1,-1], [3,0], [4,0], [2,1]] }, // Spread 7th
+    "Numpad6": { action: "setVoicing", param: [[1,-1], [2,0], [3,0], [4,0]] }, // Close cluster over low root
+    
+    // Arp Pattern format: An array of Tone Indices to play in sequence.
+    "Numpad7": { action: "setArpPattern", param: [1,2,3,4,5,6] }, // Up
+    "Numpad8": { action: "setArpPattern", param: [6,5,4,3,2,1] }, // Down
+    "Numpad9": { action: "setArpPattern", param: [1,3,2,4,3,5] }, // Up/Down
+    "NumpadAdd": { action: "setArpPattern", param: "random" }, // Random
+
+    // ==================================================================================================
+    // == Melody Keys (Right Hand)
+    // ==================================================================================================
+    "u": { action: "note", param: "C5" }, "i": { action: "note", param: "D5" }, "o": { action: "note", param: "E5" },
+    "p": { action: "note", param: "F5" }, "[": { action: "note", param: "G5" }, "]": { action: "note", param: "A5" },
+    "\\": { action: "note", param: "B5" },
+    "8": { action: "note", param: "C#5" }, "9": { action: "note", param: "D#5" }, "-": { action: "note", param: "F#5" },
+    "=": { action: "note", param: "G#5" }, "Backspace": { action: "note", param: "A#5" },
+
+    // ==================================================================================================
+    // == Chord Keys (Left Hand) - Using short syntax for modifiers
+    // ==================================================================================================
+    "z": { // I Maj
+        action: "chord",
+        param: {
+            root: "I",
+            shape: ["P1", "M3", "P5"],
+            modifiers: {
+                "x": { shape: ["P1", "M3", "P5", "M7"] }, // Maj7
+                "c": { shape: ["P1", "M3", "P5", "M7", "M9"] }, // Maj9
+                "v": { shape: ["P1", "M2", "P5"] } // sus2
+            }
+        }
+    },
+    "a": { // i min
+        action: "chord",
+        param: {
+            root: "i",
+            shape: ["P1", "m3", "P5"],
+            modifiers: {
+                "s": { shape: ["P1", "m3", "P5", "m7"] }, // min7
+                "d": { shape: ["P1", "m3", "P5", "m7", "M9"] }, // min9
+                "f": { shape: ["P1", "P4", "P5"] } // sus4
+            }
+        }
+    },
+    "q": { // V Dom
+        action: "chord",
+        param: {
+            root: "V",
+            shape: ["P1", "M3", "P5"],
+            modifiers: {
+                "w": { shape: ["P1", "M3", "P5", "m7"] }, // Dom7
+                "e": { shape: ["P1", "M3", "P5", "m7", "M9"] }, // Dom9
+                "r": { shape: ["P1", "M3", "P5", "m7", "m9"] } // Dom7b9
+            }
+        }
+    },
+    "LShift": { // vi min
+        action: "chord",
+        param: {
+            root: "vi",
+            shape: ["P1", "m3", "P5"],
+            modifiers: {
+                "z": { shape: ["P1", "m3", "P5", "m7"] } // min7
+            }
+        }
+    },
+    "LControl": { // IV Maj
+        action: "chord",
+        param: {
+            root: "IV",
+            shape: ["P1", "M3", "P5"],
+            modifiers: {
+                "z": { shape: ["P1", "M3", "P5", "M7"] } // Maj7
+            }
+        }
+    }
+}
