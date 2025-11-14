@@ -4,7 +4,7 @@
 ; --- Transposition Offsets (in semitones) ---
 global g_GlobalTranspose := 0, g_ChordTranspose := 0 ; Global and Chord-only offsets
 ; Chord State
-global g_HeldChordKeys := [], g_ChordBaseKey := ""           ; Keys currently held down for chord recognition
+global g_HeldChordKeys := []                                 ; Keys currently held down for chord recognition
 global g_SoundingChordNotes := []                            ; MIDI notes currently ON from the chord function OR notes for the arpeggiator
 global g_HeldChord_by_Capslock := []                         ; Notes latched by CapsLock
 global g_IsChordLatchOn := false                             ; CapsLock state

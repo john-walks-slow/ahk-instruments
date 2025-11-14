@@ -1,5 +1,6 @@
 #SingleInstance force
-#Include ../lib/MIDIv2.ahk
+#Include ..\lib\MIDIv2.ahk
+#Include ..\lib\Array.ahk
 
 ; 1. 全局状态
 #Include core\state.ahk

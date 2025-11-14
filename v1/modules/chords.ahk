@@ -1,7 +1,7 @@
 ; ==================================================================================================
 ; == 和弦处理逻辑 (Chord Handling Logic)
 ; ==================================================================================================
-
+global g_timerOn := false
 ; Handles key down/up events for all chord and voicing keys
 ChordKeyHandler(key, state, *) {
     global
@@ -33,15 +33,11 @@ ChordKeyHandler(key, state, *) {
             if heldKey = key
                 return
         g_HeldChordKeys.Push(key)
-
-        ; Set the base key (root key) if it's the first chord key pressed
-        if (g_ChordBaseKey = "" && KEY_TO_CHORD.Has(key))
-            g_ChordBaseKey := key
-
-        UpdateChord()
+        if (!g_timerOn) {
+            SetTimer(UpdateChord, -10)
+        }
 
     } else { ; "up"
-        isBaseKey := (key = g_ChordBaseKey)
         keyFound := false
         loop g_HeldChordKeys.Length {
             if g_HeldChordKeys[A_Index] = key {
@@ -63,13 +59,8 @@ ChordKeyHandler(key, state, *) {
             if g_HeldChordKeys.Length = 0 {
                 ; Latch the currently sounding notes
                 g_HeldChord_by_Capslock := g_SoundingChordNotes.Clone()
-                g_ChordBaseKey := ""
             }
         } else {
-            ; Non-latch behavior: remove base key if released, then update
-            if isBaseKey {
-                g_ChordBaseKey := ""
-            }
             UpdateChord()
         }
     }
@@ -111,15 +102,26 @@ UpdateChord() {
         for note in notesToPlay
             NoteOn(note)
     }
+    g_timerOn := false
 }
 
+; Gets the current chord base key by finding the first held key that exists in KEY_TO_CHORD
+GetChordBaseKey() {
+    global
+    for key, config in KEY_TO_CHORD {
+        if g_HeldChordKeys.IndexOf(key)
+            return key
+    }
+    return ""
+}
 ; --- Calculates the final chord notes ---
 BuildChordFromHeldKeys() {
     global
-    if (g_ChordBaseKey = "" || !KEY_TO_CHORD.Has(g_ChordBaseKey))
+    chordBaseKey := GetChordBaseKey()
+    if (chordBaseKey = "")
         return []
 
-    chordDef := KEY_TO_CHORD.get(g_ChordBaseKey)
+    chordDef := KEY_TO_CHORD.get(chordBaseKey)
     scaleDegree := chordDef.get("Root")
     baseQuality := chordDef.get("Quality")
     chordType := chordDef.get("Type")
